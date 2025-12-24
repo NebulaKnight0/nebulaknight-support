@@ -1,4 +1,4 @@
-name: Smart Auto Reply to Issues
+name: Smart Issue Auto Reply
 
 on:
   issues:
@@ -9,10 +9,11 @@ permissions:
   contents: read
 
 jobs:
-  smart-reply:
+  reply:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Determine reply
+      - name: Detect issue type and prepare reply
         id: detect
         run: |
           issue_body="${{ github.event.issue.body }}"
@@ -21,22 +22,22 @@ jobs:
             echo "message=Thank you for reaching out regarding your **wallet issue**. Our support team will assist you shortly." >> $GITHUB_OUTPUT
 
           elif echo "$issue_body" | grep -qi "reset\|password"; then
-            echo "message=It looks like you're having a **password/reset-related issue**. Please follow our recovery steps or contact support for immediate help." >> $GITHUB_OUTPUT
+            echo "message=It looks like you're having a **password or reset issue**. Please follow our recovery steps or contact support for priority help." >> $GITHUB_OUTPUT
 
           elif echo "$issue_body" | grep -qi "bug"; then
-            echo "message=Thanks for reporting a **bug**. Our technical team will review and follow-up." >> $GITHUB_OUTPUT
+            echo "message=Thanks for reporting a **bug**. Our technical team is reviewing it." >> $GITHUB_OUTPUT
 
           else
             echo "message=Thank you for submitting your issue. Our support team will triage it shortly." >> $GITHUB_OUTPUT
           fi
 
-      - name: Post comment
+      - name: Post reply comment
         uses: peter-evans/create-or-update-comment@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
           body: |
-            👋 Automated Support Response
+            👋 **Automated Support Response**
 
             ${{ steps.detect.outputs.message }}
 
