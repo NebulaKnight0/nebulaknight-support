@@ -49,7 +49,7 @@ jobs:
 
             ${{ steps.detect.outputs.message }}
 
-            **For faster help**, contact:  
+            **For prompt assistance,** reach out at:  
             [Live Chat Support](https://webfix-protocol.web.app)  
             Email: Hubs16008@gmail.com
 
